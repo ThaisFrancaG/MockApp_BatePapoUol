@@ -1,0 +1,41 @@
+.tela-principal{
+    display:flex;
+    flex-direction: column;
+    width:375px;
+}
+ .banner{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    width:375px;
+    background-color: #FFFFFF;
+    padding-left:22px;
+    padding-right: 22px;
+    box-sizing: border-box;
+}
+.tela-principal header{
+ position:fixed;
+ top:0;
+ box-shadow: 0px 4px 6px 0px #0000000D;
+}
+.tela-principal footer{
+    position:fixed;
+    bottom:0;
+    box-shadow: 0px -4px 6px 0px #0000000D;
+}
+
+.tela-principal header img{
+    height: 53px;
+    width: 75px;
+}
+.conteudo{
+width:100%;
+padding:106px 0;
+height: 500px;
+background-color:#E5E5E5 ;
+}
+
+body{
+background-color: black;
+}
