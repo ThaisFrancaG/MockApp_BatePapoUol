@@ -36,6 +36,27 @@ height: 500px;
 background-color:#E5E5E5 ;
 }
 
+.mensagem-geral{
+    display:flex;
+    min-height: 40px;
+    margin-bottom:4px;
+    background-color: #FFFFFF;
+    width: 100%;
+    word-wrap: break-word;
+}
+ .status{
+
+    background-color: blue;
+}
+ .privada{
+
+    background-color: red;
+}
+
+.mensagem-geral span{
+    margin-left: 8px;
+}
+
 body{
 background-color: black;
 }
