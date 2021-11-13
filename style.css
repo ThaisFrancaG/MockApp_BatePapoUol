@@ -32,7 +32,9 @@
 .conteudo{
 width:100%;
 padding:106px 0;
-height: 500px;
+
+/* height: 500px; */
+box-sizing: border-box;
 background-color:#E5E5E5 ;
 }
 
@@ -52,7 +54,9 @@ background-color:#E5E5E5 ;
 
     background-color: red;
 }
-
+.hidden{
+    display: none;
+}
 .mensagem-geral span{
     margin-left: 8px;
 }
