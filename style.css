@@ -60,7 +60,10 @@ background-color:#E5E5E5 ;
 .mensagem-geral span{
     margin-left: 8px;
 }
-
+input[type=submit]{
+   border:none;
+   background: transparent;
+}
 body{
 background-color: black;
 }

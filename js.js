@@ -28,106 +28,84 @@ function nomeValido(){
 setInterval(atividade,5000);
 
 function atividade(){
-    let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status', nomeUsuarioObj);
+    let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status');
 
-    // statusAtividade.then(console.log("logado"));
-    // statusAtividade.catch(console.log("ops"));
+    statusAtividade.then(console.log("logado"));
+    // statusAtividade.catch(analiseErroLogado);
+}
+
+function analiseErroLogado(){
+alert("Desculpe, mas você foi deslogado por inatividade!");
+window.location.reload();
 }
 // -----------------------------------------------------------------------------------------------PEGAR MENSAGENS----------------------------//
 
-let logMensagensTeste;
-
 setInterval(logMensagens,3000);
-logMensagens();
-
-let historicoMensagens;
+// logMensagens();
 
 function logMensagens(){
     let mensagensAnterior = axios.get('https://mock-api.driven.com.br/api/v4/uol/messages');
     mensagensAnterior.then(gerarMensagens);
+    mensagensAnterior.catch(analiseErroMensagem);
 }
-
+function analiseErroMensagem(erro){
+console.log(erro.response);
+alert ("Desculpe, tivemos problemas ao carregar as mensagens! A página será atualizada");
+window.location.reload();
+}
 let logAnterior;
-let x = 0;
+let logAtual=[];
 
 function gerarMensagens(resposta){
- let iguais=0;
- let diferentes=0;
- if(Object.keys(ultimaMensagem).length !== 0){
 
-    for (let i=0;i<100;i++){
-        if(logAnterior[i].time!==resposta.data[i].time&&logAnterior[i].text!==resposta.data[i].text){
-            resposta.data+=resposta.data[i];
-            diferentes++
-        }
-        else{
-            iguais++
-        }
-    }
-    console.log(iguais);
-    console.log(diferentes);
-    console.log(resposta.data.length);
+logAtual  = resposta.data;
 
+let conteudo = document.querySelector(".conteudo");
+        conteudo.innerHTML ="";
+
+escreverMensagens();
 
 }
-    // if(Object.keys(ultimaMensagem).length !== 0){
-    //     console.log("ok");
-    //     console.log(resposta.data.length);
-    //     //isso me diz se a última mensagem está vazia ou não
-    //     let indexSlice = resposta.data.indexOf(ultimaMensagem);
-    //     if(resposta.data[resposta.data.length-1]===ultimaMensagem){
-    //         console.log("não devia imprimir nada");
-    //         resposta.data ={};
-    //         //esvazaio o objeto pra não rolar nada
-    //     }
-    //     else{
-    //     resposta.data = resposta.data.slice(indexSlice);
-    //     console.log(resposta.data.length);}
-    // }
 
+function escreverMensagens(){
+    //console.log(resposta.data);eu tenho que ver se ela ainda está sendo chamada. No caso, ela não está. Então, o logAnterior não está sendo atualizado, e a comparaçào na função anterior dá errado
 
-// else{console.log("mensagens ainda não carregadas");}
+for(let ii=0; ii<logAtual.length;ii++){
 
-for(let ii=0; ii<resposta.data.length;ii++){
-  
+//aqui é só construção das mensagens
     let conteudo = document.querySelector(".conteudo");
-  
-    let tipoMensagem = resposta.data[ii].type;
+    let tipoMensagem = logAtual[ii].type;
     let tipoDeMensagem = "";
     if (tipoMensagem == 'status'){
         tipoDeMensagem = "status";
-        conteudo.innerHTML +=` <div class = "mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">${resposta.data[ii].time}</span>
-        <span class = "from">${resposta.data[ii].from}</span>
-        <span class = "mensagem">${resposta.data[ii].text}</span></div>`;
+        conteudo.innerHTML +=` <div class = "mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">${logAtual[ii].time}</span>
+        <span class = "from">${logAtual[ii].from}</span>
+        <span class = "mensagem">${logAtual[ii].text}</span></div>`;
     }
 
     else{
     if (tipoMensagem == "message"){
         tipoDeMensagem = "mensagem-geral";  
     }
-    else if (tipoMensagem == "private_message" && resposta.data[ii].to== nomeUsuarioFornecido)
+    else if (tipoMensagem == "private_message" && logAtual[ii].to== nomeUsuarioFornecido)
     //tem que corrigir esse condicional depois
     {
         tipoDeMensagem = "mensagem-geral privada";
     }
     else{tipoMensagem == "hidden"}
-    conteudo.innerHTML +=` <div class = ${tipoDeMensagem}> <span class = "tempo">${resposta.data[ii].time}</span>
-    <span class = "from">${resposta.data[ii].from}</span>
+    conteudo.innerHTML +=` <div class = ${tipoDeMensagem}> <span class = "tempo">${logAtual[ii].time}</span>
+    <span class = "from">${logAtual[ii].from}</span>
     <span>para</span>
-    <span class = "to">${resposta.data[ii].to}</span>
-    <span class = "mensagem">${resposta.data[ii].text}</span></div>`;
+    <span class = "to">${logAtual[ii].to}</span>
+    <span class = "mensagem">${logAtual[ii].text}</span></div>`;
 }
 }
-// fecha o for
-ultimaMensagem = resposta.data[resposta.data.length-1];
-console.log(ultimaMensagem);//é aqui que era é atualizada
-logAnterior = resposta.data;
-console.log(logAnterior ===resposta.data);
-
+window.scrollTo(0,document.body.scrollHeight);
 }
 
 function enviarMensagem(){
-    let mensagemDigitada = document.getElementById("mensagem").value;
+    let espacoTexto = document.getElementById("mensagem");
+    let mensagemDigitada = espacoTexto.value;
     if(mensagemDigitada!==null){
        //eu tenho que transformar o que foi digitado em um objeto
     
@@ -141,6 +119,12 @@ function enviarMensagem(){
        let statusEnvio = axios.post('https://mock-api.driven.com.br/api/v4/uol/messages', mensagemParaServidor);
        
 statusEnvio.then(logMensagens);
+statusEnvio.catch(analiseErroMensagem);
+espacoTexto.value = null;
+
+
+
+
 // statusEnvio.catch(window.location.reload());    
     }
 }
