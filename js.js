@@ -1,6 +1,7 @@
 let usuario = "";
 let nomeUsuarioFornecido;
 let nomeUsuarioObj;
+let ultimaMensagem  = {};
 
 nomeUsuario();
 function nomeUsuario(){
@@ -35,9 +36,10 @@ function atividade(){
 // -----------------------------------------------------------------------------------------------PEGAR MENSAGENS----------------------------//
 
 let logMensagensTeste;
-// setInterval(logMensagens,3000);
+
+setInterval(logMensagens,3000);
 logMensagens();
-let ultimaMensagem  = {};
+
 let historicoMensagens;
 
 function logMensagens(){
@@ -45,35 +47,47 @@ function logMensagens(){
     mensagensAnterior.then(gerarMensagens);
 }
 
+let logAnterior;
+let x = 0;
+
 function gerarMensagens(resposta){
-historicoMensagens = resposta.data;
+ let iguais=0;
+ let diferentes=0;
+ if(Object.keys(ultimaMensagem).length !== 0){
 
-if(Object.keys(ultimaMensagem).length !== 0){
-    let indexSlice = historicoMensagens.indexOf(ultimaMensagem);
-    
-    
-    if(resposta.data.includes(ultimaMensagem)){
-        indexSlice = resposta.data.indexOf(ultimaMensagem);
-        resposta.data = resposta.data.slice(indexSlice+1);
-        console.log("não devia imprimir nada");
-        resposta.data ={};
-        //esvazaio o objeto pra não rolar nada
-        console.log(ultimaMensagem);
-
-
+    for (let i=0;i<100;i++){
+        if(logAnterior[i].time!==resposta.data[i].time&&logAnterior[i].text!==resposta.data[i].text){
+            resposta.data+=resposta.data[i];
+            diferentes++
+        }
+        else{
+            iguais++
+        }
     }
-    else{
-    console.log(ultimaMensagem);
-    console.log(resposta.data[indexSlice]);
-    console.log(indexSlice);
-}}
+    console.log(iguais);
+    console.log(diferentes);
+    console.log(resposta.data.length);
 
 
-else{console.log("errou");}
-// escreverMensagens();
-// }
+}
+    // if(Object.keys(ultimaMensagem).length !== 0){
+    //     console.log("ok");
+    //     console.log(resposta.data.length);
+    //     //isso me diz se a última mensagem está vazia ou não
+    //     let indexSlice = resposta.data.indexOf(ultimaMensagem);
+    //     if(resposta.data[resposta.data.length-1]===ultimaMensagem){
+    //         console.log("não devia imprimir nada");
+    //         resposta.data ={};
+    //         //esvazaio o objeto pra não rolar nada
+    //     }
+    //     else{
+    //     resposta.data = resposta.data.slice(indexSlice);
+    //     console.log(resposta.data.length);}
+    // }
 
-// function escreverMensagens(resposta){
+
+// else{console.log("mensagens ainda não carregadas");}
+
 for(let ii=0; ii<resposta.data.length;ii++){
   
     let conteudo = document.querySelector(".conteudo");
@@ -107,6 +121,8 @@ for(let ii=0; ii<resposta.data.length;ii++){
 // fecha o for
 ultimaMensagem = resposta.data[resposta.data.length-1];
 console.log(ultimaMensagem);//é aqui que era é atualizada
+logAnterior = resposta.data;
+console.log(logAnterior ===resposta.data);
 
 }
 
