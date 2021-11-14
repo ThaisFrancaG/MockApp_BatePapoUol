@@ -1,69 +1,83 @@
+let usuario = "";
+let nomeUsuarioFornecido;
+let nomeUsuarioObj;
+
 nomeUsuario();
 function nomeUsuario(){
-// let nomeUsuarioFornecido = prompt('Selecione um nome de usuário!');
-let nomeUsuarioFornecido = 'Jfdsfsffds';
-// pedir o nome de usuário para o cliente
-// transformar o nome de usuário em objeto, para poder ser comparado no servidor
+ nomeUsuarioFornecido = prompt('Selecione um nome de usuário!');
 
-let nomeUsuario = {name:nomeUsuarioFornecido};
-// enviar o nome de usuário forcido para o servidor para ver se ele é válido ou não
-let usuarios = axios.post('https://mock-api.driven.com.br/api/v4/uol/participants', nomeUsuario);
-//criar duas situaçòes, uma para nome válido, e outra para nome inválido
+ nomeUsuarioObj = {name:nomeUsuarioFornecido};
+
+let usuarios = axios.post('https://mock-api.driven.com.br/api/v4/uol/participants', nomeUsuarioObj);
 usuarios.then(nomeValido);
 usuarios.catch(nomeInvalido);
 }
+
 function nomeInvalido(){
     alert('Nome inválido! Favor selecionar um nome diferente');
     nomeUsuario();
 }
 function nomeValido(){
     alert('bem-vindo ao chat');
+    usuario = nomeUsuarioFornecido;
     logMensagens();
+}
+//----------COFNERENCIA DE INATIVIDADE ----------
+
+setInterval(atividade,5000);
+
+function atividade(){
+    let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status', nomeUsuarioObj);
+
+    // statusAtividade.then(console.log("logado"));
+    // statusAtividade.catch(console.log("ops"));
 }
 // -----------------------------------------------------------------------------------------------PEGAR MENSAGENS----------------------------//
 
-//para testest
 let logMensagensTeste;
-setInterval(logMensagens,10000);
-//A CADA 10 SEGUNDOS, ESSA FUNÇAO VAI CHAMAR O LOG MENSAGENS, O QUAL ACESSA O SERVIDORE E VÊ TODAS AS MENSAGENS QUE ESTÀO LÁ DENTRO
-let ultimaMensagem  = {};
-//LITERALMENTE SÓ VAI SER VAZIA NO MOMENTO EM QUE A PÁGINA CARREGA. EU A ESTOU COLOCANDO AQUI FORA PORQUE QUERO QUE ELA SEJA GLOBAL E POSSA ANDAR ENTRE AS FUNÇÕES
+// setInterval(logMensagens,3000);
 logMensagens();
+let ultimaMensagem  = {};
+let historicoMensagens;
 
 function logMensagens(){
     let mensagensAnterior = axios.get('https://mock-api.driven.com.br/api/v4/uol/messages');
-
     mensagensAnterior.then(gerarMensagens);
-//A FUNÇÀO PEGA TODAS AS MENSAGENS QUE ESTÀO DENTRO DO SERVIDOR, E QUANDO ESSAS MENSAGENS CHEGAM, ELE CHAMA OUTRA FUNÇAO, QUE LÊ OS DADOS E OS ESCREVE
-
-//IDEIA: EU POSSO CRIAR UMA FUNÇÃO QUE OPERA ANTES DA GERAÇÀO DE MENSAGENS, PARA QUE ESTAS SEJAM TRATADAS?
 }
 
 function gerarMensagens(resposta){
-
-console.log(resposta.data.length);
+historicoMensagens = resposta.data;
 
 if(Object.keys(ultimaMensagem).length !== 0){
-    console.log("ok");
-    //isso me diz se a última mensagem está vazia ou não
-    let indexSlice = resposta.data.indexOf(ultimaMensagem);
-    if(resposta.data[indexSlice]===ultimaMensagem){
+    let indexSlice = historicoMensagens.indexOf(ultimaMensagem);
+    
+    
+    if(resposta.data.includes(ultimaMensagem)){
+        indexSlice = resposta.data.indexOf(ultimaMensagem);
+        resposta.data = resposta.data.slice(indexSlice+1);
         console.log("não devia imprimir nada");
         resposta.data ={};
         //esvazaio o objeto pra não rolar nada
+        console.log(ultimaMensagem);
+
+
     }
     else{
-    resposta.data = resposta.data.slice(indexSlice);
-    console.log(resposta.data.length);}
-}
+    console.log(ultimaMensagem);
+    console.log(resposta.data[indexSlice]);
+    console.log(indexSlice);
+}}
+
+
 else{console.log("errou");}
+// escreverMensagens();
+// }
 
-
+// function escreverMensagens(resposta){
 for(let ii=0; ii<resposta.data.length;ii++){
-    //com isso, ele vai passar por todos os objetos contidos
+  
     let conteudo = document.querySelector(".conteudo");
-    //porque é dentro do espaço de conteúdo que serão escritas as mensagens
-    //as agora eu tenho 4 itens para pegar, sendo que um deles, o status, eu tenho que conferir dentro de um if para ter certeza de qual a classe correta
+  
     let tipoMensagem = resposta.data[ii].type;
     let tipoDeMensagem = "";
     if (tipoMensagem == 'status'){
@@ -91,19 +105,26 @@ for(let ii=0; ii<resposta.data.length;ii++){
 }
 }
 // fecha o for
-console.log(resposta.data.length-1);
 ultimaMensagem = resposta.data[resposta.data.length-1];
-console.log(ultimaMensagem);
+console.log(ultimaMensagem);//é aqui que era é atualizada
 
 }
 
 function enviarMensagem(){
     let mensagemDigitada = document.getElementById("mensagem").value;
-    console.log(mensagemDigitada);
     if(mensagemDigitada!==null){
-        let conteudo = document.querySelector(".conteudo");
-        conteudo.innerHTML +=` <span>${mensagemDigitada}<span>`
-        console.log(conteudo);
+       //eu tenho que transformar o que foi digitado em um objeto
+    
+       let mensagemParaServidor = {
+           from: usuario,
+           to: "todos",
+           text: mensagemDigitada,
+           type: "message"
+       }
+    
+       let statusEnvio = axios.post('https://mock-api.driven.com.br/api/v4/uol/messages', mensagemParaServidor);
+       
+statusEnvio.then(logMensagens);
+// statusEnvio.catch(window.location.reload());    
     }
-
 }
