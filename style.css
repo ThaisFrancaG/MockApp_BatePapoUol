@@ -1,14 +1,14 @@
 .tela-principal{
     display:flex;
     flex-direction: column;
-    width:375px;
+    min-width:375px;
 }
  .banner{
     display:flex;
     justify-content: space-between;
     align-items: center;
     height: 80px;
-    width:375px;
+    width:100%;
     background-color: #FFFFFF;
     padding-left:22px;
     padding-right: 22px;
@@ -40,11 +40,13 @@ background-color:#E5E5E5 ;
 
 .mensagem-geral{
     display:flex;
+    flex-wrap:wrap;
     min-height: 40px;
     margin-bottom:4px;
     background-color: #FFFFFF;
     width: 100%;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding:5px 0;
 }
  .status{
 
@@ -64,6 +66,102 @@ input[type=submit]{
    border:none;
    background: transparent;
 }
+
+.tempo{
+    width:16%;
+}
+.from{
+   max-width: 35%;
+   height: 15px;
+   overflow:hidden;
+   background-color: violet;
+}
+.to{max-width:35%;
+    height: 15px;
+    overflow:hidden;
+background-color: yellow;}
+
+.mensagem{
+ word-wrap: break-word;
+ background-color: brown;
+}
+
+.tela-navegacao{
+    display:none;
+    background-color: rgb(22, 20, 20, .7);
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top:0;
+    bottom: 0;
+    width:20%;
+
+}
+.configuracoes-mensagem{
+    display:none;
+    position:fixed;
+    right: 0;
+    top:0;
+    bottom: 0;
+    z-index: 101;
+    width:80%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    background-color: white;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    font-size:16px;
+}
+
+.configuracoes-mensagem span{
+    display:flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 70px;
+    max-height: 80px;
+    width: 100%;
+    justify-content: center;
+    font-weight:700;
+    box-sizing: border-box;
+}
+
+.configuracoes-mensagem ul{
+    width: 100%;
+    padding-left: 18px;
+    /* background-color: sandybrown; */
+}
+.configuracoes-mensagem ul li{
+  
+    height: 30px;
+    display:flex;
+    align-items: center;
+    font-weight: 400;
+    overflow:hidden;
+    background-color: yellow;
+
+  
+}
+.configuracoes-mensagem ion-icon{
+    padding-right: 10px;
+   min-width: 16px;
+    background: brown;
+    text-align: center;
+}
+
+
+.check{
+  display:none;
+   
+}
+
+ .selecionado .check{
+    display:block;
+    color:red;
+
+}
+
 body{
 background-color: black;
+font-size: 14px;
+font-family: 'roboto' ;
 }

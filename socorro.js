@@ -28,4 +28,6 @@ function gerarMensagens(resposta){
    
        if(logAtual.length===0 ){
            console.log("não tem nada para imprimir");
-       }
+       }}}
+
+       

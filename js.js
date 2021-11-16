@@ -28,10 +28,10 @@ function nomeValido(){
 setInterval(atividade,5000);
 
 function atividade(){
-    let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status');
+    let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status',nomeUsuarioObj);
 
     statusAtividade.then(console.log("logado"));
-    // statusAtividade.catch(analiseErroLogado);
+    statusAtividade.catch(analiseErroLogado);
 }
 
 function analiseErroLogado(){
@@ -41,7 +41,6 @@ window.location.reload();
 // -----------------------------------------------------------------------------------------------PEGAR MENSAGENS----------------------------//
 
 setInterval(logMensagens,3000);
-// logMensagens();
 
 function logMensagens(){
     let mensagensAnterior = axios.get('https://mock-api.driven.com.br/api/v4/uol/messages');
@@ -68,11 +67,16 @@ escreverMensagens();
 }
 
 function escreverMensagens(){
-    //console.log(resposta.data);eu tenho que ver se ela ainda está sendo chamada. No caso, ela não está. Então, o logAnterior não está sendo atualizado, e a comparaçào na função anterior dá errado
+    console.log(logAtual);
 
 for(let ii=0; ii<logAtual.length;ii++){
+  
 
-//aqui é só construção das mensagens
+    if(logAtual[ii].from.length>15){
+        logAtual[ii].from = logAtual[ii].from.slice(0,14);
+        logAtual[ii].from =  logAtual[ii].from+"...";
+    }
+
     let conteudo = document.querySelector(".conteudo");
     let tipoMensagem = logAtual[ii].type;
     let tipoDeMensagem = "";
@@ -87,7 +91,7 @@ for(let ii=0; ii<logAtual.length;ii++){
     if (tipoMensagem == "message"){
         tipoDeMensagem = "mensagem-geral";  
     }
-    else if (tipoMensagem == "private_message" && logAtual[ii].to== nomeUsuarioFornecido)
+    else if (tipoMensagem == "private_message" && logAtual[ii].to== usuario)
     //tem que corrigir esse condicional depois
     {
         tipoDeMensagem = "mensagem-geral privada";
@@ -107,8 +111,7 @@ function enviarMensagem(){
     let espacoTexto = document.getElementById("mensagem");
     let mensagemDigitada = espacoTexto.value;
     if(mensagemDigitada!==null){
-       //eu tenho que transformar o que foi digitado em um objeto
-    
+   
        let mensagemParaServidor = {
            from: usuario,
            to: "todos",
@@ -121,10 +124,64 @@ function enviarMensagem(){
 statusEnvio.then(logMensagens);
 statusEnvio.catch(analiseErroMensagem);
 espacoTexto.value = null;
-
-
-
-
-// statusEnvio.catch(window.location.reload());    
+   
     }
 }
+
+// Bônus 1 - Usuários Online
+UsuariosOnline();
+
+setInterval(UsuariosOnline,10000);
+
+function UsuariosOnline(){
+    let usuariosOnline = axios.get('https://mock-api.driven.com.br/api/v4/uol/participants');
+    usuariosOnline.then(listaUsuarios);
+    usuariosOnline.catch(console.log("Tivemos um problema ao buscar os usuários!"));
+}
+
+function listaUsuarios(nomes){
+let listaUsuariosOnline = document.querySelector(".lista-usuarios");
+
+listaUsuariosOnline.innerHTML ="";
+listaUsuariosOnline.innerHTML ='<li class = "selecionado" onclick = "usuarioMensagemPrivada()"> <ion-icon name="people"></ion-icon> Todos <ion-icon class = "check"name="checkmark"></ion-icon></li>';
+    for(let i = 0; i<nomes.data.length;i++){
+        if(nomes.data[i].name.length>15){
+            nomes.data[i].name = nomes.data[i].name.slice(0,14);
+            nomes.data[i].name =  nomes.data[i].name+"...";
+        }
+
+ listaUsuariosOnline.innerHTML += `<li onclick = "usuarioMensagemPrivada(this)"><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}<ion-icon class = "check" name="checkmark"></ion-icon></li>`;}
+ 
+}
+
+function usuarioMensagemPrivada(usuarioPrivado){
+    let selecionadoAnterior = document.querySelector(".selecionado");
+    if(selecionadoAnterior!==null){
+        selecionadoAnterior.classList.remove("selecionado");
+        usuarioPrivado.classList.add("selecionado");}
+    else{usuarioPrivado.classList.add("selecionado");}
+
+    if(usuarioPrivado.innerText === "Todos"){
+        
+alert("mensagens privadas");
+
+    }
+
+    else{ alert(`mensagem privada para${usuarioPrivado.innerText}`)}
+}
+
+
+
+function verListaUsuarios() {
+let fundo  = document.querySelector(".tela-navegacao");
+let barraLateral  = document.querySelector(".configuracoes-mensagem");
+barraLateral.style.display = 'flex';
+fundo.style.display = 'block';
+}
+
+function voltarAoChat() {
+    let fundo  = document.querySelector(".tela-navegacao");
+    let barraLateral  = document.querySelector(".configuracoes-mensagem");
+    barraLateral.style.display = 'none';
+    fundo.style.display = 'none';
+    }

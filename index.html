@@ -13,25 +13,44 @@
     href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
     rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- Menu Lateral -->
+
+
     <div class = "tela-principal">
+        <div class = "tela-navegacao" onclick  = "voltarAoChat()">
+
+        </div>
+        <div class = "configuracoes-mensagem">
+            
+            <ul class = "usuarios-online">
+                <span>Escolha um contato<br> para enviar mensagem:</span><div class = "lista-usuarios"></div>
+            </ul>
+            
+            <ul><span>Escolha a visibilidade</span>
+                <li>Público</li>
+                <li>Privado</li>
+            </ul>
+        </div>
 <header class = "banner">
-    <img src="./imagens/logo 1.png"/>
+    <img  src="./imagens/logo 1.png"/>
+
+<span onclick = "verListaUsuarios()">
+<ion-icon name="people"></ion-icon></span>
 </header>
 <main class = "conteudo">
-
-
-    <ion-icon name="paper-plane-outline"></ion-icon> 
-
 
 </main>
 <footer class = "banner">
     <input type = "text" id="mensagem">
     <div type = "submit" 
-    onclick = "enviarMensagem()" ><ion-icon name='paper-plane-outline'></ion-icon></div>
+    onclick = "enviarMensagem()" ><ion-icon size = "large" name='paper-plane-outline'></ion-icon></div>
     
-
 </footer>
 
 
