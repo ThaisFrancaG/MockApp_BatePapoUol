@@ -1,6 +1,7 @@
 let usuario = "";
 let nomeUsuarioFornecido;
 let nomeUsuarioObj;
+let usuarioPrivadoAtual="";
 let ultimaMensagem  = {};
 
 nomeUsuario();
@@ -67,8 +68,7 @@ escreverMensagens();
 }
 
 function escreverMensagens(){
-    console.log(logAtual);
-
+ 
 for(let ii=0; ii<logAtual.length;ii++){
   
 
@@ -80,24 +80,28 @@ for(let ii=0; ii<logAtual.length;ii++){
     let conteudo = document.querySelector(".conteudo");
     let tipoMensagem = logAtual[ii].type;
     let tipoDeMensagem = "";
+
     if (tipoMensagem == 'status'){
         tipoDeMensagem = "status";
         conteudo.innerHTML +=` <div class = "mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">${logAtual[ii].time}</span>
         <span class = "from">${logAtual[ii].from}</span>
         <span class = "mensagem">${logAtual[ii].text}</span></div>`;
-    }
+    } //primeiro condicional: mensagem de status
 
-    else{
+    else{ //esse else vau pegar tudo o que não for status
     if (tipoMensagem == "message"){
-        tipoDeMensagem = "mensagem-geral";  
+        tipoDeMensagem = "";  
     }
-    else if (tipoMensagem == "private_message" && logAtual[ii].to== usuario)
-    //tem que corrigir esse condicional depois
+    else if (tipoMensagem == "private_message")
     {
-        tipoDeMensagem = "mensagem-geral privada";
+        if(logAtual[ii].to == usuario || logAtual[ii].from ==usuario){
+        tipoDeMensagem = "privada";}
+        else{
+            tipoDeMensagem = "hidden";
+        }
     }
-    else{tipoMensagem == "hidden"}
-    conteudo.innerHTML +=` <div class = ${tipoDeMensagem}> <span class = "tempo">${logAtual[ii].time}</span>
+    
+    conteudo.innerHTML +=` <div class ="mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">(${logAtual[ii].time})</span>
     <span class = "from">${logAtual[ii].from}</span>
     <span>para</span>
     <span class = "to">${logAtual[ii].to}</span>
@@ -108,16 +112,27 @@ window.scrollTo(0,document.body.scrollHeight);
 }
 
 function enviarMensagem(){
+    let tipoMensagem;
     let espacoTexto = document.getElementById("mensagem");
     let mensagemDigitada = espacoTexto.value;
+
+    if (usuarioPrivadoAtual.length ===0){
+        usuarioPrivadoAtual = "todos";
+        tipoMensagem = "message";
+    }
+    else{
+        tipoMensagem = "private_message";
+    }
     if(mensagemDigitada!==null){
    
        let mensagemParaServidor = {
            from: usuario,
-           to: "todos",
+           to: usuarioPrivadoAtual,
            text: mensagemDigitada,
-           type: "message"
+           type: tipoMensagem
        }
+
+       console.log(mensagemParaServidor);
     
        let statusEnvio = axios.post('https://mock-api.driven.com.br/api/v4/uol/messages', mensagemParaServidor);
        
@@ -140,19 +155,27 @@ function UsuariosOnline(){
 }
 
 function listaUsuarios(nomes){
+    
 let listaUsuariosOnline = document.querySelector(".lista-usuarios");
-
 listaUsuariosOnline.innerHTML ="";
-listaUsuariosOnline.innerHTML ='<li class = "selecionado" onclick = "usuarioMensagemPrivada()"> <ion-icon name="people"></ion-icon> Todos <ion-icon class = "check"name="checkmark"></ion-icon></li>';
+if(usuarioPrivadoAtual.length==0){listaUsuariosOnline.innerHTML ='<li class = "selecionado" onclick = "usuarioMensagemPrivada(this)"><div> <ion-icon name="people"></ion-icon>Todos </div><ion-icon class = "check"name="checkmark"></ion-icon></li>';}
+
+else{listaUsuariosOnline.innerHTML ='<li onclick = "usuarioMensagemPrivada(this)"><div> <ion-icon name="people"></ion-icon>Todos </div><ion-icon class = "check"name="checkmark"></ion-icon></li>';}
+
     for(let i = 0; i<nomes.data.length;i++){
         if(nomes.data[i].name.length>15){
             nomes.data[i].name = nomes.data[i].name.slice(0,14);
             nomes.data[i].name =  nomes.data[i].name+"...";
         }
+        if(nomes.data[i].name === usuarioPrivadoAtual){
+            
+        listaUsuariosOnline.innerHTML += `<li class = "selecionado" onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;
+        }
+        else{   listaUsuariosOnline.innerHTML += `<li onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;}
 
- listaUsuariosOnline.innerHTML += `<li onclick = "usuarioMensagemPrivada(this)"><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}<ion-icon class = "check" name="checkmark"></ion-icon></li>`;}
+
  
-}
+}}
 
 function usuarioMensagemPrivada(usuarioPrivado){
     let selecionadoAnterior = document.querySelector(".selecionado");
@@ -161,13 +184,16 @@ function usuarioMensagemPrivada(usuarioPrivado){
         usuarioPrivado.classList.add("selecionado");}
     else{usuarioPrivado.classList.add("selecionado");}
 
-    if(usuarioPrivado.innerText === "Todos"){
+    console.log(usuarioPrivado.innerText );
+    if(usuarioPrivado.innerText == "Todos"){
         
 alert("mensagens privadas");
+console.log("socorro");
+usuarioPrivadoAtual = "";
 
     }
 
-    else{ alert(`mensagem privada para${usuarioPrivado.innerText}`)}
+    else{ usuarioPrivadoAtual = usuarioPrivado.innerText;}
 }
 
 

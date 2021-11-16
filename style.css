@@ -18,6 +18,7 @@
  position:fixed;
  top:0;
  box-shadow: 0px 4px 6px 0px #0000000D;
+ font-size: 40px;
 }
 .tela-principal footer{
     position:fixed;
@@ -44,17 +45,24 @@ background-color:#E5E5E5 ;
     min-height: 40px;
     margin-bottom:4px;
     background-color: #FFFFFF;
+    word-break: break-all;
     width: 100%;
-    overflow-wrap: break-word;
     padding:5px 0;
+
+    /* background-color: blue; */
 }
+
+.mensagem-geral .mensagem{
+    padding-right: 3px;
+}
+
  .status{
 
-    background-color: blue;
+    background-color:     #DCDCDC;
+
 }
  .privada{
-
-    background-color: red;
+    background-color: #FFDEDE;
 }
 .hidden{
     display: none;
@@ -69,21 +77,24 @@ input[type=submit]{
 
 .tempo{
     width:16%;
+    color: #AAAAAA;
 }
 .from{
    max-width: 35%;
    height: 15px;
    overflow:hidden;
-   background-color: violet;
+   font-weight: 700;
+   /* background-color: violet; */
 }
 .to{max-width:35%;
     height: 15px;
-    overflow:hidden;
-background-color: yellow;}
+    font-weight: 700;
+/* background-color: yellow;*/
+} 
 
 .mensagem{
  word-wrap: break-word;
- background-color: brown;
+ /* background-color: brown; */
 }
 
 .tela-navegacao{
@@ -137,14 +148,15 @@ background-color: yellow;}
     align-items: center;
     font-weight: 400;
     overflow:hidden;
-    background-color: yellow;
+    /* background-color: yellow; */
+    justify-content: space-between;
 
   
 }
 .configuracoes-mensagem ion-icon{
     padding-right: 10px;
    min-width: 16px;
-    background: brown;
+    /* background: brown; */
     text-align: center;
 }
 
@@ -156,7 +168,6 @@ background-color: yellow;}
 
  .selecionado .check{
     display:block;
-    color:red;
 
 }
 
