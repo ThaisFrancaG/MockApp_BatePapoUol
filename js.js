@@ -30,8 +30,6 @@ setInterval(atividade,5000);
 
 function atividade(){
     let statusAtividade = axios.post('https://mock-api.driven.com.br/api/v4/uol/status',nomeUsuarioObj);
-
-    statusAtividade.then(console.log("logado"));
     statusAtividade.catch(analiseErroLogado);
 }
 
@@ -49,7 +47,6 @@ function logMensagens(){
     mensagensAnterior.catch(analiseErroMensagem);
 }
 function analiseErroMensagem(erro){
-console.log(erro.response);
 alert ("Desculpe, tivemos problemas ao carregar as mensagens! A página será atualizada");
 window.location.reload();
 }
@@ -83,7 +80,7 @@ for(let ii=0; ii<logAtual.length;ii++){
 
     if (tipoMensagem == 'status'){
         tipoDeMensagem = "status";
-        conteudo.innerHTML +=` <div class = "mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">${logAtual[ii].time}</span>
+        conteudo.innerHTML +=` <div data-identifier="message" class = "mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">(${logAtual[ii].time})</span>
         <span class = "from">${logAtual[ii].from}</span>
         <span class = "mensagem">${logAtual[ii].text}</span></div>`;
     } //primeiro condicional: mensagem de status
@@ -94,14 +91,14 @@ for(let ii=0; ii<logAtual.length;ii++){
     }
     else if (tipoMensagem == "private_message")
     {
-        if(logAtual[ii].to == usuario || logAtual[ii].from ==usuario){
+        if(logAtual[ii].to.slice(0,14) == usuario.slice(0,14) || logAtual[ii].from.slice(0,14) ==usuario.slice(0,14)){
         tipoDeMensagem = "privada";}
         else{
             tipoDeMensagem = "hidden";
         }
     }
     
-    conteudo.innerHTML +=` <div class ="mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">(${logAtual[ii].time})</span>
+    conteudo.innerHTML +=` <div data-identifier="message" class ="mensagem-geral ${tipoDeMensagem}"> <span class = "tempo">(${logAtual[ii].time})</span>
     <span class = "from">${logAtual[ii].from}</span>
     <span>para</span>
     <span class = "to">${logAtual[ii].to}</span>
@@ -131,8 +128,6 @@ function enviarMensagem(){
            text: mensagemDigitada,
            type: tipoMensagem
        }
-
-       console.log(mensagemParaServidor);
     
        let statusEnvio = axios.post('https://mock-api.driven.com.br/api/v4/uol/messages', mensagemParaServidor);
        
@@ -151,7 +146,6 @@ setInterval(UsuariosOnline,10000);
 function UsuariosOnline(){
     let usuariosOnline = axios.get('https://mock-api.driven.com.br/api/v4/uol/participants');
     usuariosOnline.then(listaUsuarios);
-    usuariosOnline.catch(console.log("Tivemos um problema ao buscar os usuários!"));
 }
 
 function listaUsuarios(nomes){
@@ -169,9 +163,9 @@ else{listaUsuariosOnline.innerHTML ='<li onclick = "usuarioMensagemPrivada(this)
         }
         if(nomes.data[i].name === usuarioPrivadoAtual){
             
-        listaUsuariosOnline.innerHTML += `<li class = "selecionado" onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;
+        listaUsuariosOnline.innerHTML += `<li data-identifier="participant" class = "selecionado" onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;
         }
-        else{   listaUsuariosOnline.innerHTML += `<li onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;}
+        else{   listaUsuariosOnline.innerHTML += `<li data-identifier="participant" onclick = "usuarioMensagemPrivada(this)"><div><ion-icon name="person-circle"></ion-icon>${nomes.data[i].name}</div><ion-icon class = "check" name="checkmark"></ion-icon></li>`;}
 
 
  
@@ -184,16 +178,26 @@ function usuarioMensagemPrivada(usuarioPrivado){
         usuarioPrivado.classList.add("selecionado");}
     else{usuarioPrivado.classList.add("selecionado");}
 
-    console.log(usuarioPrivado.innerText );
-    if(usuarioPrivado.innerText == "Todos"){
-        
-alert("mensagens privadas");
-console.log("socorro");
-usuarioPrivadoAtual = "";
 
+    if(usuarioPrivado.innerText == "Todos"){
+
+     let textoMensagem = document.getElementById("mensagem");
+     textoMensagem.placeholder = "Escreva aqui...";
+     usuarioPrivadoAtual = "";
+     let mensagemPublica  = document.querySelector(".cadeado-aberto");
+     mensagemPublica.classList.add("selecionado");
+     let estadoMensagem = document.querySelector(".cadeado-fechado");
+     estadoMensagem.classList.remove("selecionado");
     }
 
-    else{ usuarioPrivadoAtual = usuarioPrivado.innerText;}
+    else{ usuarioPrivadoAtual = usuarioPrivado.innerText;
+        let textoMensagem = document.getElementById("mensagem");
+        let mensagemPublica = document.querySelector(".cadeado-aberto");
+        mensagemPublica .classList.remove("selecionado");
+        let estadoMensagem = document.querySelector(".cadeado-fechado");
+        estadoMensagem.classList.add("selecionado");
+        textoMensagem.placeholder = `Escreva aqui...
+        Enviando mensagem para ${usuarioPrivadoAtual} (reservadamente)`;}
 }
 
 

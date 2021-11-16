@@ -33,8 +33,8 @@
             </ul>
             
             <ul><span>Escolha a visibilidade</span>
-                <li><div><ion-icon name="lock-open"></ion-icon>Público</div></li>
-                <li><div><ion-icon name="lock-closed"></ion-icon>Reservadamente</div></li>
+                <li class = "cadeado-aberto selecionado"><div><ion-icon name="lock-open"></ion-icon>Público</div><ion-icon class = "check"name="checkmark"></ion-icon></li>
+                <li class = "cadeado-fechado"><div><ion-icon name="lock-closed"></ion-icon>Reservadamente</div><ion-icon class = "check"name="checkmark"></ion-icon></li>
             </ul>
         </div>
 <header class = "banner">
@@ -47,8 +47,8 @@
 
 </main>
 <footer class = "banner">
-    <input type = "text" id="mensagem">
-    <div type = "submit" 
+    <input type = "text" id="mensagem" placeholder="Escreva aqui...">
+    <div data-identifier="send-message" type = "submit" 
     onclick = "enviarMensagem()" ><ion-icon size = "large" name='paper-plane-outline'></ion-icon></div>
     
 </footer>
